@@ -104,7 +104,6 @@
       left: 50%;
       width: 5px;
       height: 5px;
-      background: #fff;
       opacity: 0;
       border-radius: 50%;
       animation: sparkle-fall linear forwards;
@@ -137,8 +136,8 @@
   // Add event listener for the Enter key to trigger the generate button
   document.getElementById("text-input").addEventListener("keypress", function(event) {
     if (event.key === "Enter") {
-      event.preventDefault();  // Prevents any default behavior of the Enter key
-      document.getElementById("generate-button").click();  // Simulate button click
+      event.preventDefault();
+      document.getElementById("generate-button").click();
     }
   });
 
@@ -201,10 +200,14 @@
     const sparkle = document.createElement("div");
     sparkle.classList.add("sparkle");
 
-    // Randomize position and animation duration for each sparkle
+    // Randomize position, animation duration, and opacity
     sparkle.style.left = `${Math.random() * 100}vw`;
     sparkle.style.animationDuration = `${1 + Math.random() * 2}s`;
     sparkle.style.opacity = Math.random();
+
+    // Set a random color for each sparkle
+    const colors = ['#ff6b6b', '#f06595', '#00f260', '#0575e6', '#ffccff'];
+    sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
     document.body.appendChild(sparkle);
 
