@@ -3,50 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Generator</title>
+  <title>Matt's Always Free QRs</title>
   <style>
+    /* Basic styling to center the content */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      background: linear-gradient(135deg, #f9f9f9, #e6e6e6);
+      color: #333;
       margin: 0;
     }
     #qr-container {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 320px;
+      width: 100%;
       text-align: center;
+    }
+    #qr-container h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    #text-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      outline: none;
+      font-size: 16px;
+    }
+    #generate-button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #generate-button:hover {
+      background-color: #2980b9;
     }
     #qr-code {
       margin-top: 20px;
+    }
+    #download-link {
+      display: block;
+      margin-top: 10px;
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+    }
+    #download-link:hover {
+      color: #2980b9;
     }
   </style>
 </head>
 <body>
 
 <div id="qr-container">
-  <h1>QR Code Generator</h1>
-  <input type="text" id="text-input" placeholder="Enter text here" />
-  <button onclick="generateQRCode()">Generate QR Code</button>
+  <h1>Matt's Always Free QRs</h1>
+  <input type="text" id="text-input" placeholder="Enter text or URL" />
+  <button id="generate-button" onclick="generateQRCode()">Generate QR Code</button>
   <div id="qr-code"></div>
+  <a id="download-link" href="#" download="qr_code.png" style="display: none;">Click to Download</a>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
   function generateQRCode() {
     const text = document.getElementById("text-input").value;
+    const qrContainer = document.getElementById("qr-code");
+    const downloadLink = document.getElementById("download-link");
+
     if (!text) {
-      alert("Please enter some text.");
+      alert("Please enter some text or a URL.");
       return;
     }
 
-    // Clear previous QR code
-    document.getElementById("qr-code").innerHTML = "";
+    // Clear previous QR code and download link
+    qrContainer.innerHTML = "";
+    downloadLink.style.display = "none";
 
     // Generate new QR code
     const qr = qrcode(0, "L");
     qr.addData(text);
     qr.make();
-    document.getElementById("qr-code").innerHTML = qr.createImgTag();
+
+    // Create the QR code image
+    const qrImage = qr.createImgTag();
+    qrContainer.innerHTML = qrImage;
+
+    // Set up the download link
+    const imgElement = qrContainer.querySelector("img");
+    imgElement.id = "qr-image";
+    imgElement.alt = "QR Code";
+
+    // Convert the image to a data URL for download
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const qrImg = new Image();
+    qrImg.src = imgElement.src;
+
+    qrImg.onload = function () {
+      canvas.width = qrImg.width;
+      canvas.height = qrImg.height;
+      ctx.drawImage(qrImg, 0, 0);
+      const dataUrl = canvas.toDataURL("image/png");
+
+      // Set the download link URL and show it
+      downloadLink.href = dataUrl;
+      downloadLink.style.display = "block";
+    };
   }
 </script>
 
